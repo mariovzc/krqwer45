@@ -15,6 +15,7 @@ class App extends Component {
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.inputchange = this.inputchange.bind(this)
+    this.changeTaskState = this.changeTaskState.bind(this)
   }
   handleSubmit (event) {
     event.preventDefault()
@@ -29,13 +30,32 @@ class App extends Component {
   inputchange (event) {
     this.setState({newTask: event.target.value})
   }
+  changeTaskState (id) {
+    const newArr = this.state.tasks.map(task => {
+      if (task.id === id) {
+        task.done = !task.done
+      }
+      return task
+    })
+    this.setState({tasks: newArr})
+  }
   render () {
     return (
       <div className='wrapper'>
         <div className='list'>
           <h3>Por hacer:</h3>
           <ul className='todo'>
-            {this.state.tasks.map((task, index) => <li key={task.id}>{task.name}</li>)}
+            {this.state.tasks.map((task) => {
+              return (
+                <li
+                  className={task.done ? 'done' : ''}
+                  key={task.id}
+                  onClick={() => this.changeTaskState(task.id)}
+                  >
+                  {task.name}
+                </li>
+              )
+            })}
           </ul>
           <form onSubmit={this.handleSubmit}>
             <input
