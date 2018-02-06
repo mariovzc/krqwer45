@@ -11,21 +11,27 @@ class App extends Component {
         { id: 2, name: 'Hacer la cama', done: true },
         { id: 3, name: 'Leer un rato', done: false }
       ],
-      newTask: ''
+      newTask: '',
+      isInValid: false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.inputchange = this.inputchange.bind(this)
     this.changeTaskState = this.changeTaskState.bind(this)
   }
   handleSubmit (event) {
+    if (this.state.newTask === '') {
+      this.setState({ isInValid: true })
+    } else {
+      const oldTasks = this.state.tasks
+      const last = oldTasks.slice(-1)[0]
+      const newTask = {id: last.id + 1, name: this.state.newTask, done: false}
+      this.setState({
+        tasks: [...oldTasks, newTask],
+        newTask: '',
+        isInValid: false
+      })
+    }
     event.preventDefault()
-    const oldTasks = this.state.tasks
-    const last = oldTasks.slice(-1)[0]
-    const newTask = {id: last.id + 1, name: this.state.newTask, done: false}
-    this.setState({
-      tasks: [...oldTasks, newTask],
-      newTask: ''
-    })
   }
   inputchange (event) {
     this.setState({newTask: event.target.value})
@@ -64,6 +70,7 @@ class App extends Component {
               placeholder='Ingresa una tarea y oprime Enter'
               value={this.state.newTask}
               onChange={this.inputchange}
+              className={this.state.isInValid ? 'error' : ''}
             />
           </form>
         </div>
